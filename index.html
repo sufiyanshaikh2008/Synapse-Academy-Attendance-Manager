@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* ---- Yellow & Green palette ---- */
+      --ink: #1B4332;        /* primary text, header — deep forest green */
+      --ink-2: #2D6A4F;      /* structural green — Classes */
+      --gold: #F4B400;       /* seal / accent — Students, now yellow */
+      --gold-soft: #FDF0C6;
+      --sage: #52B788;       /* present / Attendance */
+      --sage-soft: #E3F5EA;
+      --clay: #D97706;       /* absent / Tests / danger — amber */
+      --clay-soft: #FCEEDA;
+      --teal: #40916C;       /* WhatsApp / messaging — green */
+      --teal-soft: #E1F0E7;
+      --plum: #6D4C9F;       /* Reports accent — purple */
+      --plum-soft: #EDE6F7;
+
+      --parchment: #FFFBEA;  /* page background — pale yellow */
+      --card: #FFFFF7;       /* card surface */
+      --line: #E6DFA8;       /* hairline rule */
+      --text: #1B2B1F;
+      --muted: #6B7A5E;
+    }
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, Roboto, Arial, sans-serif;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(244, 180, 0, 0) 0px,
+          rgba(244, 180, 0, 0) 33px,
+          rgba(244, 180, 0, 0.07) 34px
+        ),
+        var(--parchment);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Fraunces', Georgia, serif; }
+
+    /* ---------- HEADER ---------- */
+    header {
+      background: var(--ink);
+      color: #F3EEDD;
+      padding: 22px 20px 0;
+      border-bottom: 3px solid var(--gold);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 720px;
+      margin: 0 auto;
+      padding-bottom: 18px;
+    }
+    .seal {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: radial-gradient(circle at 32% 28%, #FFD34D, var(--gold) 60%, #B8860B 100%);
+      border: 2px solid #FCE29B;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.35), inset 0 1px 1px rgba(255,255,255,0.35);
+    }
+    .seal span {
+      font-family: 'Fraunces', serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--ink);
+      letter-spacing: 0.5px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: #FBF7EC;
+    }
+    header .subtitle {
+      margin: 3px 0 0;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 13.5px;
+      color: #D9EFC9;
+    }
+
+    /* ---------- FOLDER-TAB NAV ---------- */
+    nav {
+      display: flex;
+      max-width: 720px;
+      margin: 0 auto;
+      background: transparent;
+      gap: 4px;
+      padding: 0 10px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      overflow-x: auto;
+    }
+    nav button {
+      flex: 1;
+      min-width: 76px;
+      padding: 11px 6px 10px;
+      border: 1px solid var(--line);
+      border-bottom: none;
+      background: #F0E9B0;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.8px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 9px 9px 0 0;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transform: translateY(3px);
+      transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+    nav button .tab-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: var(--dot, var(--muted));
+    }
+    nav button.active {
+      color: var(--ink);
+      background: var(--card);
+      border-color: var(--line);
+      transform: translateY(0);
+      box-shadow: 0 -2px 6px rgba(27,67,50,0.08);
+    }
+    nav button:not(.active):hover { background: #F3EDB8; }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 18px 20px 20px;
+      background: var(--card);
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      min-height: 40vh;
+    }
+    .tab { display: none; animation: settle 0.28s ease; }
+    .tab.active { display: block; }
+    @keyframes settle {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- CARDS ---------- */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-top: 3px solid var(--ink-2);
+      border-radius: 4px 10px 10px 10px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(27, 67, 50, 0.08);
+    }
+    .card.accent-sage { border-top-color: var(--sage); }
+    .card.accent-gold { border-top-color: var(--gold); }
+    .card.accent-clay { border-top-color: var(--clay); }
+    .card.accent-teal { border-top-color: var(--teal); }
+    .card.accent-ink  { border-top-color: var(--ink-2); }
+    .card.accent-plum { border-top-color: var(--plum); }
+
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .row > * { flex: 1; min-width: 120px; }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 10px;
+      background: #FFFEF2;
+      color: var(--text);
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(244, 180, 0, 0.22);
+    }
+    label { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+
+    button.btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 7px;
+      background: var(--ink);
+      color: #FBF7EC;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+    button.btn:hover { background: var(--ink-2); }
+    button.btn:active { transform: scale(0.98); }
+    button.btn.secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--line);
+    }
+    button.btn.secondary:hover { background: var(--gold-soft); border-color: var(--gold); }
+    button.btn.small { padding: 6px 11px; font-size: 12px; }
+    button.btn:disabled { opacity: 0.55; cursor: default; }
+
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 2px;
+      border-bottom: 1px dashed var(--line);
+      gap: 10px;
+    }
+    .list-item:last-child { border-bottom: none; }
+    .list-item .meta { font-size: 12px; color: var(--muted); }
+    .link { color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--gold); font-size: 13px; }
+
+    .toggle-group { display: flex; gap: 6px; }
+    .toggle {
+      padding: 6px 13px;
+      border-radius: 20px;
+      border: 1.5px solid var(--line);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #FFFEF2;
+      color: var(--muted);
+      transition: all 0.15s ease;
+    }
+    .toggle.present.active { background: var(--sage-soft); border-color: var(--sage); color: var(--sage); }
+    .toggle.absent.active  { background: var(--clay-soft); border-color: var(--clay); color: var(--clay); }
+    .toggle.ab.active      { background: var(--gold-soft); border-color: var(--gold); color: #8F6A1D; }
+
+    .empty { color: var(--muted); font-size: 13px; text-align: center; padding: 22px 0; font-style: italic; }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink);
+      color: #FBF7EC;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+      max-width: 90%;
+      text-align: center;
+      z-index: 100;
+      border: 1px solid var(--gold);
+    }
+    .toast.show { opacity: 1; }
+    .toast.error { background: var(--clay); border-color: var(--clay); }
+
+    .spinner {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border: 2px solid rgba(251,247,236,0.5);
+      border-top-color: #FBF7EC;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .quick-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+    .quick-actions button { flex: 1; }
+
+    h3 {
+      margin: 0 0 12px 0;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .wa-card { border-top-color: var(--teal); }
+    .wa-card h4 {
+      margin: 0 0 10px 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink);
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .wa-textarea {
+      width: 100%;
+      min-height: 170px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.6;
+      padding: 12px 13px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      resize: vertical;
+      white-space: pre-wrap;
+      background: #FCFAE6;
+      color: var(--text);
+    }
+    .wa-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 700; }
+    .wa-badge.absent   { background: var(--clay-soft); color: var(--clay); }
+    .wa-badge.present  { background: var(--sage-soft); color: var(--sage); }
+    .wa-badge.unmarked { background: var(--gold-soft); color: #8F6A1D; }
+
+    /* Test marks tab */
+    .marks-input {
+      width: 72px;
+      flex: 0 0 auto;
+      margin: 0;
+      padding: 8px 8px;
+      text-align: center;
+    }
+    .marks-row-controls { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+    select#testPrevSelect { margin-bottom: 10px; }
+
+    /* Multi-class (batch) checkboxes */
+    .check-group { margin-bottom: 10px; }
+    .check-item {
+      display: flex; align-items: center;
+      padding: 7px 10px; margin-bottom: 6px;
+      border: 1px solid var(--line); border-radius: 7px;
+      background: #FFFEF2; font-size: 13.5px; color: var(--text); cursor: pointer;
+    }
+    .check-item input { width: auto; margin: 0 8px 0 0; }
+    .batch-heading {
+      font-family: 'Fraunces', serif; font-weight: 600; font-size: 14px;
+      color: var(--ink-2); padding: 10px 2px 4px; border-bottom: 2px solid var(--gold-soft);
+    }
+
+    footer.foot {
+      text-align: center;
+      color: var(--muted);
+      font-size: 11.5px;
+      font-style: italic;
+      font-family: 'Fraunces', serif;
+      margin-top: 4px;
+      padding-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="seal"><span>SA</span></div>
+    <div>
+      <h1>Synapse Academy</h1>
+      <p class="subtitle">Attendance &amp; Results Register</p>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <button class="tab-btn active" data-tab="attendanceTab" style="--dot: var(--sage);"><span class="tab-dot"></span>Attendance</button>
+  <button class="tab-btn" data-tab="studentsTab" style="--dot: var(--gold);"><span class="tab-dot"></span>Students</button>
+  <button class="tab-btn" data-tab="classesTab" style="--dot: var(--ink-2);"><span class="tab-dot"></span>Classes</button>
+  <button class="tab-btn" data-tab="testsTab" style="--dot: var(--clay);"><span class="tab-dot"></span>Tests</button>
+  <button class="tab-btn" data-tab="reportsTab" style="--dot: var(--plum);"><span class="tab-dot"></span>Reports</button>
+  <button class="tab-btn" data-tab="whatsappTab" style="--dot: var(--teal);"><span class="tab-dot"></span>WhatsApp</button>
+</nav>
+
+<main>
+
+  <!-- ATTENDANCE TAB -->
+  <div id="attendanceTab" class="tab active">
+    <div class="card accent-sage">
+      <h3>Mark Attendance</h3>
+      <label>Class</label>
+      <select id="attClassSelect"></select>
+      <label>Date</label>
+      <input type="date" id="attDate">
+      <button class="btn secondary" id="loadAttendanceBtn" style="width:100%;">Load Class</button>
+    </div>
+
+    <div class="card accent-sage" id="attendanceListCard" style="display:none;">
+      <div class="quick-actions">
+        <button class="btn secondary small" id="markAllPresentBtn">Mark All Present</button>
+        <button class="btn secondary small" id="markAllAbsentBtn">Mark All Absent</button>
+      </div>
+      <div id="attendanceList"></div>
+      <button class="btn" id="saveAttendanceBtn" style="width:100%; margin-top:12px;">Save Attendance</button>
+    </div>
+  </div>
+
+  <!-- STUDENTS TAB -->
+  <div id="studentsTab" class="tab">
+    <div class="card accent-gold">
+      <h3>Add Student</h3>
+      <label>Class</label>
+      <select id="stuClassSelect"></select>
+      <div class="row">
+        <div>
+          <label>Roll No</label>
+          <input type="text" id="stuRoll" placeholder="e.g. 12">
+        </div>
+        <div>
+          <label>Name</label>
+          <input type="text" id="stuName" placeholder="Full name">
+        </div>
+      </div>
+      <button class="btn" id="addStudentBtn" style="width:100%;">Add Student</button>
+    </div>
+
+    <div class="card accent-gold">
+      <h3>Students List</h3>
+      <div id="studentsList"><div class="empty">Select a class to view students.</div></div>
+    </div>
+  </div>
+
+  <!-- CLASSES TAB -->
+  <div id="classesTab" class="tab">
+    <div class="card accent-ink">
+      <h3>Add Class</h3>
+      <input type="text" id="newClassName" placeholder="e.g. Grade 12 Science">
+      <button class="btn" id="addClassBtn" style="width:100%;">Create Class</button>
+    </div>
+
+    <div class="card accent-ink">
+      <h3>Existing Classes</h3>
+      <div id="classesList"><div class="empty">No classes yet.</div></div>
+    </div>
+  </div>
+
+  <!-- TESTS TAB -->
+  <div id="testsTab" class="tab">
+    <div class="card accent-clay">
+      <h3>Enter Test Marks</h3>
+      <label>Class / Batches (tick one or more, e.g. both 10th batches)</label>
+      <div id="testClassChecks" class="check-group"></div>
+      <div class="row">
+        <div>
+          <label>Date of Test</label>
+          <input type="date" id="testDate">
+        </div>
+        <div>
+          <label>Total Marks</label>
+          <input type="number" id="testTotalMarks" min="1" placeholder="e.g. 55">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Subject</label>
+          <input type="text" id="testSubject" placeholder="e.g. BIOLOGY">
+        </div>
+        <div>
+          <label>Chapter / Topic</label>
+          <input type="text" id="testChapter" placeholder="e.g. UNIT 2 - Genetics">
+        </div>
+      </div>
+      <button class="btn secondary" id="loadTestClassBtn" style="width:100%;">Load Class</button>
+      <p style="font-size:11.5px; color:var(--muted); margin:8px 0 0;">
+        Tip: to edit a test you already saved, tick the same classes and enter the same date + subject + chapter, then tap "Load Class" — existing marks will be filled in.
+      </p>
+    </div>
+
+    <div class="card accent-clay" id="testMarksCard" style="display:none;">
+      <div class="quick-actions">
+        <button class="btn secondary small" id="clearAllAbsentBtn">Clear All "AB"</button>
+      </div>
+      <div id="testMarksList"></div>
+      <button class="btn" id="saveTestBtn" style="width:100%; margin-top:12px;">Save Marks &amp; Generate Message</button>
+    </div>
+
+    <div class="card wa-card" id="testMessageCard" style="display:none;">
+      <h4>Result Message</h4>
+      <textarea class="wa-textarea" id="testMessageArea" readonly></textarea>
+      <button class="btn secondary small" id="copyTestMessageBtn" style="margin-top:8px;">Copy Message</button>
+    </div>
+
+    <div class="card accent-clay">
+      <h3>Previous Tests</h3>
+      <label>Class / Batches</label>
+      <div id="testPrevClassChecks" class="check-group"></div>
+      <select id="testPrevSelect"><option value="">Select a class to see its tests</option></select>
+      <button class="btn secondary" id="viewPrevTestBtn" style="width:100%;">View / Copy Message</button>
+    </div>
+  </div>
+
+  <!-- REPORTS TAB -->
+  <div id="reportsTab" class="tab">
+    <div class="card accent-plum">
+      <h3>Student Performance Report</h3>
+      <label>Class</label>
+      <select id="reportClassSelect"></select>
+      <label>Student</label>
+      <select id="reportStudentSelect"><option value="">Select a class first</option></select>
+      <button class="btn" id="generateReportBtn" style="width:100%; margin-top:6px;">Generate PDF Report</button>
+      <p style="font-size:11.5px; color:var(--muted); margin:10px 0 0;">
+        The PDF includes every test result on record for this student, grouped by month, plus an attendance summary (days present / absent out of total days recorded).
+      </p>
+    </div>
+  </div>
+
+  <!-- WHATSAPP TAB -->
+  <div id="whatsappTab" class="tab">
+    <div class="card accent-teal">
+      <h3>Generate Attendance Messages</h3>
+      <label>Date</label>
+      <input type="date" id="waDate">
+      <button class="btn" id="generateWaBtn" style="width:100%;">Generate Messages</button>
+    </div>
+    <div id="waResults"></div>
+  </div>
+
+  <footer class="foot">Synapse Academy · Attendance &amp; Results Register</footer>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let currentClasses = [];
+  let currentStudents = []; // for attendance tab
+  let attendanceStatus = {}; // rollNo -> 'Present' | 'Absent'
+
+  let testCurrentStudents = []; // for tests tab: [{ className, rollNo, name }]
+  let testMarksState = {}; // "className::rollNo" -> number | 'AB'
+  let prevTestsCache = []; // last getTestsForClasses() result for "Previous Tests"
+
+  // ---------- UTIL ----------
+  function toast(msg, isError) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (isError ? ' error' : '');
+    setTimeout(function () { t.className = 'toast'; }, 3000);
+  }
+
+  function setBtnLoading(btn, loading, label) {
+    btn.disabled = loading;
+    btn.innerHTML = loading ? '<span class="spinner"></span>' + label : label;
+  }
+
+  function isoToDisplay(iso) {
+    if (!iso) return '';
+    const parts = iso.split('-'); // yyyy-mm-dd
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    const dd = String(d.getDate()).padStart(2, '0');
+    const mm = d.toLocaleString('default', { month: 'short' });
+    return dd + '-' + mm + '-' + parts[0];
+  }
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Combines the separate Subject and Chapter/Topic boxes into the single
+  // "subject" string the backend expects (e.g. "BIOLOGY (UNIT 2 - Genetics)").
+  function getCombinedTestSubject() {
+    const subject = document.getElementById('testSubject').value.trim();
+    const chapter = document.getElementById('testChapter').value.trim();
+    return chapter ? (subject + ' (' + chapter + ')') : subject;
+  }
+
+  // Decodes a base64 PDF returned from the server and triggers a browser
+  // download of it — used by the Reports tab.
+  function downloadBase64Pdf(base64, filename) {
+    const byteChars = atob(base64);
+    const byteNumbers = new Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+
+  // Returns the values of all ticked checkboxes inside a container.
+  function getCheckedClasses(containerId) {
+    return Array.prototype.slice
+      .call(document.querySelectorAll('#' + containerId + ' input:checked'))
+      .map(function (cb) { return cb.value; });
+  }
+
+  // Builds the checkbox lists used by the Tests tab (keeps existing ticks).
+  function populateClassChecks() {
+    ['testClassChecks', 'testPrevClassChecks'].forEach(function (id) {
+      const el = document.getElementById(id);
+      const prev = getCheckedClasses(id);
+      el.innerHTML = '';
+      if (!currentClasses.length) {
+        el.innerHTML = '<div class="empty">No classes yet — add one first</div>';
+        return;
+      }
+      currentClasses.forEach(function (c) {
+        const lbl = document.createElement('label');
+        lbl.className = 'check-item';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = c.name;
+        cb.checked = prev.indexOf(c.name) !== -1;
+        lbl.appendChild(cb);
+        lbl.appendChild(document.createTextNode(c.name));
+        el.appendChild(lbl);
+      });
+    });
+  }
+
+  // ---------- NAV ----------
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab').forEach(function (t) { t.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+      if (btn.dataset.tab === 'testsTab') {
+        if (currentClasses.length) {
+          populateClassChecks();
+        } else {
+          refreshClassList();
+        }
+      }
+    });
+  });
+
+  // ---------- INIT ----------
+  function refreshClassList() {
+    google.script.run
+      .withSuccessHandler(function (classes) {
+        currentClasses = classes;
+        populateClassSelects();
+        populateClassChecks();
+        renderClassesList();
+      })
+      .withFailureHandler(function (err) { toast(err.message || String(err), true); })
+      .getClassList();
+  }
+
+  function populateClassSelects() {
+    ['attClassSelect', 'stuClassSelect', 'reportClassSelect'].forEach(function (id) {
+      const sel = document.getElementById(id);
+      const prev = sel.value;
+      sel.innerHTML = '';
+      if (!currentClasses.length) {
+        sel.innerHTML = '<option value="">No classes yet — add one first</option>';
+        return;
+      }
+      currentClasses.forEach(function (c) {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name;
+        sel.appendChild(opt);
+      });
+      if (prev) sel.value = prev;
+    });
+  }
+
+  document.getElementById('attDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('waDate').value = new Date().toISOString().slice(0, 10);
+  document.getElementById('testDate').value = new Date().toISOString().slice(0, 10);
+
+  // ---------- CLASSES TAB ----------
+  document.getElementById('addClassBtn').addEventListener('click', function () {
+    const name = document.getElementById('newClassName').value.trim();
+    if (!name) { toast('Enter a class name.', true); return; }
+    const btn = this;
+    setBtnLoading(btn, true, 'Create Class');
+    google.script.run
+      .withSuccessHandler(function () {
+        setBtnLoading(btn, false, 'Create Class');
+        document.getElementById('newClassName').value = '';
+        toast('Class "' + name + '" created.');
+        refreshClassList();
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Create Class');
+        toast(err.message || String(err), true);
+      })
+      .addClass(name);
+  });
+
+  function renderClassesList() {
+    const el = document.getElementById('classesList');
+    if (!currentClasses.length) {
+      el.innerHTML = '<div class="empty">No classes yet.</div>';
+      return;
+    }
+    el.innerHTML = '';
+    currentClasses.forEach(function (c) {
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      div.innerHTML =
+        '<div><strong>' + escapeHtml(c.name) + '</strong><br>' +
+        '<a class="link" href="' + c.sheetUrl + '" target="_blank">Open Google Sheet ↗</a></div>' +
+        '<button class="btn secondary small" data-name="' + escapeHtml(c.name) + '">Remove</button>';
+      div.querySelector('button').addEventListener('click', function () {
+        if (!confirm('Remove "' + c.name + '" from the app? The Google Sheet itself will NOT be deleted.')) return;
+        google.script.run
+          .withSuccessHandler(function () { toast('Class removed.'); refreshClassList(); })
+          .withFailureHandler(function (err) { toast(err.message || String(err), true); })
+          .deleteClass(c.name);
+      });
+      el.appendChild(div);
+    });
+  }
+
+  // ---------- STUDENTS TAB ----------
+  document.getElementById('stuClassSelect').addEventListener('change', loadStudentsList);
+
+  function loadStudentsList() {
+    const className = document.getElementById('stuClassSelect').value;
+    const el = document.getElementById('studentsList');
+    if (!className) { el.innerHTML = '<div class="empty">Select a class to view students.</div>'; return; }
+    el.innerHTML = '<div class="empty">Loading…</div>';
+    google.script.run
+      .withSuccessHandler(function (students) {
+        if (!students.length) { el.innerHTML = '<div class="empty">No students added yet.</div>'; return; }
+        el.innerHTML = '';
+        students.forEach(function (s) {
+          const div = document.createElement('div');
+          div.className = 'list-item';
+          div.innerHTML =
+            '<div>Roll <strong>' + escapeHtml(s.rollNo) + '</strong> — ' + escapeHtml(s.name) + '</div>' +
+            '<button class="btn secondary small" data-roll="' + escapeHtml(s.rollNo) + '">Remove</button>';
+          div.querySelector('button').addEventListener('click', function () {
+            if (!confirm('Remove ' + s.name + ' (Roll ' + s.rollNo + ')?')) return;
+            google.script.run
+              .withSuccessHandler(function () { toast('Student removed.'); loadStudentsList(); })
+              .withFailureHandler(function (err) { toast(err.message || String(err), true); })
+              .deleteStudent(className, s.rollNo);
+          });
+          el.appendChild(div);
+        });
+      })
+      .withFailureHandler(function (err) { el.innerHTML = '<div class="empty">Error loading students.</div>'; toast(err.message || String(err), true); })
+      .getStudents(className);
+  }
+
+  document.getElementById('addStudentBtn').addEventListener('click', function () {
+    const className = document.getElementById('stuClassSelect').value;
+    const roll = document.getElementById('stuRoll').value.trim();
+    const name = document.getElementById('stuName').value.trim();
+    if (!className) { toast('Select a class first.', true); return; }
+    if (!roll || !name) { toast('Enter roll number and name.', true); return; }
+    const btn = this;
+    setBtnLoading(btn, true, 'Add Student');
+    google.script.run
+      .withSuccessHandler(function () {
+        setBtnLoading(btn, false, 'Add Student');
+        document.getElementById('stuRoll').value = '';
+        document.getElementById('stuName').value = '';
+        toast('Student added.');
+        loadStudentsList();
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Add Student');
+        toast(err.message || String(err), true);
+      })
+      .addStudent(className, roll, name);
+  });
+
+  // ---------- ATTENDANCE TAB ----------
+  document.getElementById('loadAttendanceBtn').addEventListener('click', function () {
+    const className = document.getElementById('attClassSelect').value;
+    const isoDate = document.getElementById('attDate').value;
+    if (!className) { toast('Select a class first.', true); return; }
+    if (!isoDate) { toast('Pick a date first.', true); return; }
+    const displayDate = isoToDisplay(isoDate);
+
+    const btn = this;
+    setBtnLoading(btn, true, 'Load Class');
+
+    google.script.run
+      .withSuccessHandler(function (students) {
+        currentStudents = students;
+        if (!students.length) {
+          setBtnLoading(btn, false, 'Load Class');
+          toast('No students in this class yet.', true);
+          document.getElementById('attendanceListCard').style.display = 'none';
+          return;
+        }
+        google.script.run
+          .withSuccessHandler(function (existing) {
+            setBtnLoading(btn, false, 'Load Class');
+            attendanceStatus = {};
+            students.forEach(function (s) {
+              attendanceStatus[s.rollNo] = existing[s.rollNo] || 'Present';
+            });
+            renderAttendanceList(displayDate);
+          })
+          .withFailureHandler(function () {
+            setBtnLoading(btn, false, 'Load Class');
+            attendanceStatus = {};
+            students.forEach(function (s) { attendanceStatus[s.rollNo] = 'Present'; });
+            renderAttendanceList(displayDate);
+          })
+          .getAttendanceForDate(className, isoDate);
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Load Class');
+        toast(err.message || String(err), true);
+      })
+      .getStudents(className);
+  });
+
+  function renderAttendanceList(displayDate) {
+    document.getElementById('attendanceListCard').style.display = 'block';
+    const el = document.getElementById('attendanceList');
+    el.innerHTML = '';
+    currentStudents.forEach(function (s) {
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      const status = attendanceStatus[s.rollNo] || 'Present';
+      div.innerHTML =
+        '<div>Roll <strong>' + escapeHtml(s.rollNo) + '</strong> — ' + escapeHtml(s.name) + '</div>' +
+        '<div class="toggle-group" data-roll="' + escapeHtml(s.rollNo) + '">' +
+          '<button type="button" class="toggle present ' + (status === 'Present' ? 'active' : '') + '">P</button>' +
+          '<button type="button" class="toggle absent ' + (status === 'Absent' ? 'active' : '') + '">A</button>' +
+        '</div>';
+      const group = div.querySelector('.toggle-group');
+      group.querySelector('.present').addEventListener('click', function () {
+        attendanceStatus[s.rollNo] = 'Present';
+        group.querySelector('.present').classList.add('active');
+        group.querySelector('.absent').classList.remove('active');
+      });
+      group.querySelector('.absent').addEventListener('click', function () {
+        attendanceStatus[s.rollNo] = 'Absent';
+        group.querySelector('.absent').classList.add('active');
+        group.querySelector('.present').classList.remove('active');
+      });
+      el.appendChild(div);
+    });
+  }
+
+  document.getElementById('markAllPresentBtn').addEventListener('click', function () {
+    currentStudents.forEach(function (s) { attendanceStatus[s.rollNo] = 'Present'; });
+    renderAttendanceList();
+  });
+  document.getElementById('markAllAbsentBtn').addEventListener('click', function () {
+    currentStudents.forEach(function (s) { attendanceStatus[s.rollNo] = 'Absent'; });
+    renderAttendanceList();
+  });
+
+  document.getElementById('saveAttendanceBtn').addEventListener('click', function () {
+    const className = document.getElementById('attClassSelect').value;
+    const isoDate = document.getElementById('attDate').value;
+    if (!className || !isoDate || !currentStudents.length) return;
+
+    const records = currentStudents.map(function (s) {
+      return { rollNo: s.rollNo, status: attendanceStatus[s.rollNo] || 'Present' };
+    });
+
+    const btn = this;
+    setBtnLoading(btn, true, 'Save Attendance');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        setBtnLoading(btn, false, 'Save Attendance');
+        toast('Attendance saved for ' + res.date + ' (' + res.marked + ' students).');
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Save Attendance');
+        toast(err.message || String(err), true);
+      })
+      .markAttendance(className, isoDate, records);
+  });
+
+  // ---------- TESTS TAB (multi-class) ----------
+  function testKey(s) { return s.className + '::' + s.rollNo; }
+
+  document.getElementById('loadTestClassBtn').addEventListener('click', function () {
+    const classNames = getCheckedClasses('testClassChecks');
+    const isoDate = document.getElementById('testDate').value;
+    const subject = getCombinedTestSubject();
+    const totalMarksInput = document.getElementById('testTotalMarks');
+
+    if (!classNames.length) { toast('Tick at least one class.', true); return; }
+    if (!isoDate) { toast('Pick a date first.', true); return; }
+    if (!subject) { toast('Enter a subject first.', true); return; }
+
+    const btn = this;
+    setBtnLoading(btn, true, 'Load Class');
+    document.getElementById('testMessageCard').style.display = 'none';
+
+    google.script.run
+      .withSuccessHandler(function (students) {
+        testCurrentStudents = students;
+        if (!students.length) {
+          setBtnLoading(btn, false, 'Load Class');
+          toast('No students in the selected classes yet.', true);
+          document.getElementById('testMarksCard').style.display = 'none';
+          return;
+        }
+        google.script.run
+          .withSuccessHandler(function (existing) {
+            setBtnLoading(btn, false, 'Load Class');
+            testMarksState = {};
+            students.forEach(function (s) {
+              const k = testKey(s);
+              testMarksState[k] = (existing.marks && existing.marks[k] !== undefined) ? existing.marks[k] : '';
+            });
+            if (existing.totalMarks) {
+              totalMarksInput.value = existing.totalMarks;
+              toast('Existing marks for this test were loaded.');
+            }
+            renderTestMarksList();
+          })
+          .withFailureHandler(function () {
+            setBtnLoading(btn, false, 'Load Class');
+            testMarksState = {};
+            students.forEach(function (s) { testMarksState[testKey(s)] = ''; });
+            renderTestMarksList();
+          })
+          .getMarksForTestMulti(classNames, isoDate, subject);
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Load Class');
+        toast(err.message || String(err), true);
+      })
+      .getStudentsForClasses(classNames);
+  });
+
+  function renderTestMarksList() {
+    document.getElementById('testMarksCard').style.display = 'block';
+    const el = document.getElementById('testMarksList');
+    el.innerHTML = '';
+    let lastClass = null;
+    testCurrentStudents.forEach(function (s) {
+      if (s.className !== lastClass) {
+        lastClass = s.className;
+        const h = document.createElement('div');
+        h.className = 'batch-heading';
+        h.textContent = s.className;
+        el.appendChild(h);
+      }
+      const k = testKey(s);
+      const div = document.createElement('div');
+      div.className = 'list-item';
+      const val = testMarksState[k];
+      const isAbsent = String(val).toUpperCase() === 'AB';
+      const numVal = isAbsent ? '' : (val === undefined ? '' : val);
+
+      div.innerHTML =
+        '<div>Roll <strong>' + escapeHtml(s.rollNo) + '</strong> — ' + escapeHtml(s.name) + '</div>' +
+        '<div class="marks-row-controls">' +
+          '<input type="number" class="marks-input" min="0" placeholder="marks" value="' + escapeHtml(numVal) + '" ' + (isAbsent ? 'disabled' : '') + '>' +
+          '<button type="button" class="toggle ab ' + (isAbsent ? 'active' : '') + '">AB</button>' +
+        '</div>';
+
+      const input = div.querySelector('.marks-input');
+      const abBtn = div.querySelector('.ab');
+
+      input.addEventListener('input', function () { testMarksState[k] = input.value; });
+      abBtn.addEventListener('click', function () {
+        const nowAbsent = !abBtn.classList.contains('active');
+        abBtn.classList.toggle('active', nowAbsent);
+        input.disabled = nowAbsent;
+        if (nowAbsent) { testMarksState[k] = 'AB'; input.value = ''; }
+        else { testMarksState[k] = ''; }
+      });
+      el.appendChild(div);
+    });
+  }
+
+  document.getElementById('clearAllAbsentBtn').addEventListener('click', function () {
+    testCurrentStudents.forEach(function (s) {
+      const k = testKey(s);
+      if (String(testMarksState[k]).toUpperCase() === 'AB') testMarksState[k] = '';
+    });
+    renderTestMarksList();
+  });
+
+  document.getElementById('saveTestBtn').addEventListener('click', function () {
+    const classNames = getCheckedClasses('testClassChecks');
+    const isoDate = document.getElementById('testDate').value;
+    const subject = getCombinedTestSubject();
+    const totalMarks = document.getElementById('testTotalMarks').value;
+
+    if (!classNames.length || !isoDate || !subject) { toast('Fill in class, date and subject.', true); return; }
+    if (!totalMarks || Number(totalMarks) <= 0) { toast('Enter the total marks for the test.', true); return; }
+    if (!testCurrentStudents.length) return;
+
+    const records = testCurrentStudents.map(function (s) {
+      return { className: s.className, rollNo: s.rollNo, marks: testMarksState[testKey(s)] };
+    });
+
+    const btn = this;
+    setBtnLoading(btn, true, 'Save Marks & Generate Message');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        toast('Marks saved for ' + res.subject + ' (' + res.marked + ' students).');
+        google.script.run
+          .withSuccessHandler(function (msgRes) {
+            setBtnLoading(btn, false, 'Save Marks & Generate Message');
+            showTestMessage(msgRes.message);
+          })
+          .withFailureHandler(function (err) {
+            setBtnLoading(btn, false, 'Save Marks & Generate Message');
+            toast(err.message || String(err), true);
+          })
+          .generateCombinedTestMessage(classNames, isoDate, subject);
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Save Marks & Generate Message');
+        toast(err.message || String(err), true);
+      })
+      .recordTestMarksMulti(classNames, isoDate, subject, totalMarks, records);
+  });
+
+  function showTestMessage(message) {
+    document.getElementById('testMessageCard').style.display = 'block';
+    document.getElementById('testMessageArea').value = message;
+  }
+
+  document.getElementById('copyTestMessageBtn').addEventListener('click', function () {
+    copyTextareaEl(document.getElementById('testMessageArea'), this);
+  });
+
+  // ---------- Previous Tests (multi-class) ----------
+  document.getElementById('testPrevClassChecks').addEventListener('change', function () {
+    const classNames = getCheckedClasses('testPrevClassChecks');
+    const sel = document.getElementById('testPrevSelect');
+    if (!classNames.length) {
+      sel.innerHTML = '<option value="">Select a class to see its tests</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">Loading…</option>';
+    google.script.run
+      .withSuccessHandler(function (tests) {
+        prevTestsCache = tests;
+        if (!tests.length) {
+          sel.innerHTML = '<option value="">No tests saved yet for these classes</option>';
+          return;
+        }
+        sel.innerHTML = '';
+        tests.forEach(function (t, idx) {
+          const opt = document.createElement('option');
+          opt.value = String(idx);
+          opt.textContent = t.subject + ' — ' + t.displayDate + ' (' + t.totalMarks + ' marks)';
+          sel.appendChild(opt);
+        });
+      })
+      .withFailureHandler(function (err) {
+        sel.innerHTML = '<option value="">Error loading tests</option>';
+        toast(err.message || String(err), true);
+      })
+      .getTestsForClasses(classNames);
+  });
+
+  document.getElementById('viewPrevTestBtn').addEventListener('click', function () {
+    const classNames = getCheckedClasses('testPrevClassChecks');
+    const idx = document.getElementById('testPrevSelect').value;
+    if (!classNames.length || idx === '') { toast('Select a class and a test first.', true); return; }
+    const t = prevTestsCache[Number(idx)];
+    if (!t) { toast('Select a test first.', true); return; }
+
+    const btn = this;
+    setBtnLoading(btn, true, 'View / Copy Message');
+    google.script.run
+      .withSuccessHandler(function (msgRes) {
+        setBtnLoading(btn, false, 'View / Copy Message');
+        showTestMessage(msgRes.message);
+        document.getElementById('testMessageCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'View / Copy Message');
+        toast(err.message || String(err), true);
+      })
+      .generateCombinedTestMessage(classNames, t.isoDate, t.subject);
+  });
+
+  // ---------- REPORTS TAB ----------
+  document.getElementById('reportClassSelect').addEventListener('change', function () {
+    const className = this.value;
+    const sel = document.getElementById('reportStudentSelect');
+    if (!className) {
+      sel.innerHTML = '<option value="">Select a class first</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">Loading…</option>';
+    google.script.run
+      .withSuccessHandler(function (students) {
+        if (!students.length) {
+          sel.innerHTML = '<option value="">No students in this class yet</option>';
+          return;
+        }
+        sel.innerHTML = '';
+        students.forEach(function (s) {
+          const opt = document.createElement('option');
+          opt.value = s.rollNo;
+          opt.textContent = 'Roll ' + s.rollNo + ' — ' + s.name;
+          sel.appendChild(opt);
+        });
+      })
+      .withFailureHandler(function (err) {
+        sel.innerHTML = '<option value="">Error loading students</option>';
+        toast(err.message || String(err), true);
+      })
+      .getStudents(className);
+  });
+
+  document.getElementById('generateReportBtn').addEventListener('click', function () {
+    const className = document.getElementById('reportClassSelect').value;
+    const rollNo = document.getElementById('reportStudentSelect').value;
+    if (!className) { toast('Select a class first.', true); return; }
+    if (!rollNo) { toast('Select a student first.', true); return; }
+
+    const btn = this;
+    setBtnLoading(btn, true, 'Generate PDF Report');
+    google.script.run
+      .withSuccessHandler(function (res) {
+        setBtnLoading(btn, false, 'Generate PDF Report');
+        downloadBase64Pdf(res.base64, res.fileName);
+        toast('Report downloaded: ' + res.fileName);
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Generate PDF Report');
+        toast(err.message || String(err), true);
+      })
+      .generatePerformanceReportPdf(className, rollNo);
+  });
+
+  // ---------- WHATSAPP TAB ----------
+  document.getElementById('generateWaBtn').addEventListener('click', function () {
+    const isoDate = document.getElementById('waDate').value;
+    if (!isoDate) { toast('Pick a date first.', true); return; }
+    const btn = this;
+    setBtnLoading(btn, true, 'Generate Messages');
+    google.script.run
+      .withSuccessHandler(function (results) {
+        setBtnLoading(btn, false, 'Generate Messages');
+        renderWaResults(results);
+      })
+      .withFailureHandler(function (err) {
+        setBtnLoading(btn, false, 'Generate Messages');
+        toast(err.message || String(err), true);
+      })
+      .getWhatsAppMessages(isoDate);
+  });
+
+  function renderWaResults(results) {
+    const el = document.getElementById('waResults');
+    el.innerHTML = '';
+    if (!results.length) {
+      el.innerHTML = '<div class="card"><div class="empty">No classes found. Add a class first.</div></div>';
+      return;
+    }
+    results.forEach(function (r, idx) {
+      const card = document.createElement('div');
+      card.className = 'card wa-card';
+
+      let badgeClass = 'unmarked';
+      let badgeText = 'Not marked';
+      if (r.marked) {
+        badgeClass = r.absentCount > 0 ? 'absent' : 'present';
+        badgeText = r.absentCount > 0 ? (r.absentCount + ' absent') : 'All present';
+      }
+
+      const taId = 'waMsg_' + idx;
+      card.innerHTML =
+        '<h4>' + escapeHtml(r.className) + ' <span class="wa-badge ' + badgeClass + '">' + badgeText + '</span></h4>' +
+        '<textarea class="wa-textarea" id="' + taId + '" readonly>' + escapeHtml(r.message) + '</textarea>' +
+        '<button class="btn secondary small" style="margin-top:8px;" data-target="' + taId + '">Copy Message</button>';
+
+      card.querySelector('button').addEventListener('click', function () {
+        copyTextarea(taId, this);
+      });
+
+      el.appendChild(card);
+    });
+  }
+
+  function copyTextarea(id, btn) {
+    copyTextareaEl(document.getElementById(id), btn);
+  }
+
+  function copyTextareaEl(ta, btn) {
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, 999999);
+
+    let copied = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(ta.value);
+        copied = true;
+      }
+    } catch (e) { copied = false; }
+
+    if (!copied) {
+      try { copied = document.execCommand('copy'); } catch (e) { copied = false; }
+    }
+
+    const original = btn.textContent;
+    btn.textContent = copied ? 'Copied ✓' : 'Select & copy manually';
+    setTimeout(function () { btn.textContent = original; }, 1500);
+  }
+
+  // boot
+  refreshClassList();
+</script>
+
+</body>
+</html>
